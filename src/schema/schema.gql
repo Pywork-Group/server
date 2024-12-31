@@ -1,0 +1,218 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Case {
+  imagePath: String!
+  nameEn: String!
+  nameRu: String!
+  oldPriceEUR: Decimal
+  oldPriceRUB: Decimal
+  oldPriceUSD: Decimal
+  priceEUR: Decimal!
+  priceRUB: Decimal!
+  priceUSD: Decimal!
+  slug: String!
+}
+
+type CaseInfo {
+  imagePath: String!
+  slug: String!
+}
+
+type Category {
+  cases: [Case!]!
+  nameEn: String!
+  nameRu: String!
+}
+
+enum Currency {
+  EUR
+  RUB
+  USD
+}
+
+type CurrentCase {
+  imagePath: String!
+  nameEn: String!
+  nameRu: String!
+  oldPriceEUR: Decimal
+  oldPriceRUB: Decimal
+  oldPriceUSD: Decimal
+  priceEUR: Decimal!
+  priceRUB: Decimal!
+  priceUSD: Decimal!
+  skins: [Skin!]!
+  slug: String!
+}
+
+type CurrentSkin {
+  cases: [Case!]!
+  imagePath: String!
+  nameEn: String!
+  nameRu: String!
+  qualities: [Quality!]!
+  rarity: Rarity!
+  similarSkins: [Skin!]!
+}
+
+type CurrentUser {
+  avatarPath: String!
+  balance: Decimal!
+  currency: Currency!
+  id: Int!
+  username: String!
+}
+
+"""
+Decimal scalar type that ensures the value is a number with 2 decimal places
+"""
+scalar Decimal
+
+type Mutation {
+  contract(items: [Int!]!): Win!
+  logout: Boolean!
+  openCase(slug: String!, times: Int!): [[Skin!]!]!
+  requestWin(winId: Int!): Int!
+  sellAllWins: Decimal!
+  sellWins(items: [Int!]!): [Int!]!
+  updateTradeLink(tradeLink: String!): String!
+}
+
+enum Origin {
+  CASE
+  CONTRACT
+  UPGRADE
+}
+
+type Quality {
+  priceEUR: Decimal!
+  priceRUB: Decimal!
+  priceUSD: Decimal!
+  statTrakPriceEUR: Decimal!
+  statTrakPriceRUB: Decimal!
+  statTrakPriceUSD: Decimal!
+  wear: Wear!
+}
+
+type Query {
+  catalog: [Category!]!
+  currentCase(slug: String!): CurrentCase!
+  currentSkin(id: Int!): CurrentSkin!
+  currentUser: CurrentUser!
+  statistics: Statistics!
+  user(id: Int!): User!
+  wins(query: WinsQueryInput!): Wins!
+}
+
+enum Rarity {
+  CLASSIFIED
+  CONSUMER
+  COVERT
+  GOLD
+  INDUSTRIAL
+  MIL_SPEC
+  RESTRICTED
+}
+
+type Skin {
+  id: Int!
+  imagePath: String!
+  isStatTrak: Boolean
+  nameEn: String!
+  nameRu: String!
+  priceEUR: Decimal
+  priceRUB: Decimal
+  priceUSD: Decimal
+  rarity: Rarity!
+  status: Status
+  wear: Wear
+  win: Win
+}
+
+enum Stat {
+  CASE
+  CONTRACT
+  WIN
+}
+
+type Statistic {
+  increment: Int!
+  stat: Stat!
+}
+
+type Statistics {
+  cases: Int!
+  contracts: Int!
+  wins: Int!
+}
+
+enum Status {
+  CONTRACTED
+  RECEIVED
+  REQUESTED
+  SOLD
+  UPGRADED
+  WON
+}
+
+type Subscription {
+  liveStatistics: Statistic
+  liveWins(userId: Int): Win
+}
+
+type User {
+  avatarPath: String!
+  balance: Decimal
+  currency: Currency
+  id: Int!
+  steamId: String!
+  tradeLink: String
+  username: String!
+}
+
+type UserInfo {
+  avatarPath: String!
+  id: Int!
+  username: String!
+}
+
+enum Wear {
+  BATTLE_SCARRED
+  FACTORY_NEW
+  FIELD_TESTED
+  MINIMAL_WEAR
+  WELL_WORN
+}
+
+type Win {
+  case: CaseInfo
+  id: Int!
+  imagePath: String!
+  isStatTrak: Boolean!
+  nameEn: String!
+  nameRu: String!
+  origin: Origin!
+  priceEUR: Decimal!
+  priceRUB: Decimal!
+  priceUSD: Decimal!
+  rarity: Rarity!
+  skinId: Int!
+  status: Status!
+  user: UserInfo!
+  wear: Wear!
+}
+
+type Wins {
+  count: Int!
+  wins: [Win!]!
+}
+
+input WinsQueryInput {
+  isNotUser: Boolean
+  isUserRequired: Boolean
+  page: Int!
+  perPage: Int!
+  status: Status
+  userId: Int
+}

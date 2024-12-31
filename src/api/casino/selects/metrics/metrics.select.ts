@@ -1,0 +1,15 @@
+export const METRICS_SELECT = {
+	profitPercentage: true,
+	profitRUB: true,
+	profitUSD: true,
+	profitEUR: true,
+	spentRUB: true,
+	spentUSD: true,
+	spentEUR: true,
+	rewardRUB: true,
+	rewardUSD: true,
+	rewardEUR: true,
+	prizeRUB: true,
+	prizeUSD: true,
+	prizeEUR: true,
+}

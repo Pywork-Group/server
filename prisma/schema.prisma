@@ -1,0 +1,298 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ENUMS
+enum UserRole {
+  ADMIN
+  PLAYER
+
+  @@map("user_role")
+}
+
+enum Type {
+  // Пистолеты
+  GLOCK_18
+  USP_S
+  P2000
+  DUAL_BERETTAS
+  P250
+  FIVE_SEVEN
+  TEC_9
+  CZ75_AUTO
+  DESERT_EAGLE
+  R8_REVOLVER
+
+  // Пистолеты-пулеметы
+  MP9
+  MAC_10
+  MP7
+  MP5_SD
+  UMP_45
+  P90
+  PP_BIZON
+
+  // Винтовки
+  FAMAS
+  GALIL_AR
+  M4A4
+  M4A1_S
+  AK_47
+  AUG
+  SG_553
+
+  // Снайперские винтовки
+  AWP
+  SSG_08
+  SCAR_20
+  G3SG1
+
+  // Пулеметы
+  M249
+  NEGEV
+
+  // Дробовики
+  MAG_7
+  SAWED_OFF
+  NOVA
+  XM1014
+
+  // Ножи
+  KNIFE
+
+  // Перчатки
+  GLOVES
+
+  // Наклейки
+  STICKER
+
+  @@map("type")
+}
+
+enum Wear {
+  FACTORY_NEW
+  MINIMAL_WEAR
+  FIELD_TESTED
+  WELL_WORN
+  BATTLE_SCARRED
+
+  @@map("wear")
+}
+
+enum Rarity {
+  CONSUMER
+  MIL_SPEC
+  INDUSTRIAL
+  RESTRICTED
+  CLASSIFIED
+  COVERT
+  GOLD
+
+  @@map("rarity")
+}
+
+enum Status {
+  WON
+  CONTRACTED
+  UPGRADED
+  SOLD
+  RECEIVED
+  REQUESTED
+
+  @@map("status")
+}
+
+enum Origin {
+  CASE
+  CONTRACT
+  UPGRADE
+
+  @@map("origin")
+}
+
+enum Currency {
+  RUB
+  USD
+  EUR
+
+  @@map("currency")
+}
+
+// MODELS
+model Metrics {
+  id Int @id @default(autoincrement())
+
+  profitPercentage Int @default(15) @map("profit_percentage")
+
+  profitRUB Decimal @default(0.00) @map("profit_rub") @db.Decimal(10, 2)
+  profitUSD Decimal @default(0.00) @map("profit_usd") @db.Decimal(10, 2)
+  profitEUR Decimal @default(0.00) @map("profit_eur") @db.Decimal(10, 2)
+
+  spentRUB Decimal @default(0.00) @map("spent_rub") @db.Decimal(10, 2)
+  spentUSD Decimal @default(0.00) @map("spent_usd") @db.Decimal(10, 2)
+  spentEUR Decimal @default(0.00) @map("spent_eur") @db.Decimal(10, 2)
+
+  rewardRUB Decimal @default(0.00) @map("reward_rub") @db.Decimal(10, 2)
+  rewardUSD Decimal @default(0.00) @map("reward_usd") @db.Decimal(10, 2)
+  rewardEUR Decimal @default(0.00) @map("reward_eur") @db.Decimal(10, 2)
+
+  prizeRUB Decimal @default(0.00) @map("prize_rub") @db.Decimal(10, 2)
+  prizeUSD Decimal @default(0.00) @map("prize_usd") @db.Decimal(10, 2)
+  prizeEUR Decimal @default(0.00) @map("prize_eur") @db.Decimal(10, 2)
+
+  count Int @default(0)
+
+  case     Case?   @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  caseId   Int?    @unique @map("case_id")
+  casino   Casino? @relation(fields: [casinoId], references: [id], onDelete: Cascade)
+  casinoId Int?    @unique @map("casino_id")
+
+  @@map("metrics")
+}
+
+model Casino {
+  id Int @id @default(autoincrement())
+
+  contract Metrics?
+
+  @@map("casino")
+}
+
+model Skin {
+  id Int @id @default(autoincrement())
+
+  nameRu String @unique @map("name_ru")
+  nameEn String @unique @map("name_en")
+
+  imagePath String @map("image_path")
+
+  type      Type
+  rarity    Rarity
+  qualities Quality[]
+
+  wins  Win[]
+  cases Case[] @relation(name: "skin_case")
+
+  isHidden Boolean @default(true) @map("is_hidden")
+
+  @@map("skin")
+}
+
+model Quality {
+  id Int @id @default(autoincrement())
+
+  skin Skin @relation(fields: [skinId], references: [id], onDelete: Cascade)
+
+  priceRUB Decimal @map("price_rub") @db.Decimal(10, 2)
+  priceUSD Decimal @map("price_usd") @db.Decimal(10, 2)
+  priceEUR Decimal @map("price_eur") @db.Decimal(10, 2)
+  wear     Wear
+  wins     Win[]
+
+  isStatTrak Boolean @default(false) @map("is_stat_trak")
+
+  skinId Int @map("skin_id")
+
+  @@map("quality")
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+
+  nameRu String @unique @map("name_ru")
+  nameEn String @unique @map("name_en")
+
+  cases Case[]
+
+  @@map("category")
+}
+
+model Case {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  nameRu String @unique @map("name_ru")
+  nameEn String @unique @map("name_en")
+  slug   String @unique
+
+  imagePath String @map("image_path")
+
+  oldPriceRUB Decimal? @map("old_price_rub") @db.Decimal(10, 2)
+  oldPriceUSD Decimal? @map("old_price_usd") @db.Decimal(10, 2)
+  oldPriceEUR Decimal? @map("old_price_eur") @db.Decimal(10, 2)
+  priceRUB    Decimal  @map("price_rub") @db.Decimal(10, 2)
+  priceUSD    Decimal  @map("price_usd") @db.Decimal(10, 2)
+  priceEUR    Decimal  @map("price_eur") @db.Decimal(10, 2)
+
+  metrics  Metrics?
+  category Category @relation(fields: [categoryId], references: [id])
+
+  wins  Win[]
+  skins Skin[] @relation(name: "skin_case")
+
+  isHidden Boolean @default(true) @map("is_hidden")
+
+  categoryId Int @map("category_id")
+  metricsId  Int @map("metrics_id")
+
+  @@map("case")
+}
+
+model Win {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  skin    Skin?    @relation(fields: [skinId], references: [id], onDelete: Cascade)
+  case    Case?    @relation(fields: [caseId], references: [id])
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quality Quality? @relation(fields: [qualityId], references: [id], onDelete: Cascade)
+
+  origin Origin
+
+  status Status @default(WON)
+
+  caseId    Int? @map("case_id")
+  userId    Int  @map("user_id")
+  skinId    Int? @map("skin_id")
+  qualityId Int? @map("quality_id")
+
+  @@map("win")
+}
+
+model Profile {
+  id Int @id @default(autoincrement())
+
+  username   String
+  avatarPath String @map("avatar_path")
+
+  tradeLink String? @map("trade_link")
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @unique @map("user_id")
+
+  @@map("profile")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  steamId   String   @unique @map("steam_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  balance Decimal @default(0.00) @db.Decimal(10, 2)
+
+  profile Profile?
+  wins    Win[]
+
+  winChance Int @default(200) @map("win_chance")
+
+  currency Currency
+  role     UserRole @default(PLAYER)
+
+  @@map("user")
+}
