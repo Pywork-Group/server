@@ -14,9 +14,6 @@ lerna-debug.log*
 # OS
 .DS_Store
 
-# env files (can opt-in for committing if needed)
-.env*
-
 # Tests
 /coverage
 /.nyc_output
@@ -36,3 +33,7 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# other files
+.yarn.lock
+TODO.txt

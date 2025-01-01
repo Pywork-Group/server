@@ -6,6 +6,7 @@ import { AuthModule } from './api/auth/auth.module'
 import { CaseModule } from './api/case/case.module'
 import { CasinoModule } from './api/casino/casino.module'
 import { CategoryModule } from './api/category/category.module'
+import { CryptoModule } from './api/payment/crypto/crypto.module'
 import { SkinModule } from './api/skin/skin.module'
 import { SocketModule } from './api/socket/socket.module'
 import { TelegramModule } from './api/telegram/telegram.module'
@@ -33,6 +34,7 @@ import { GlobalModule } from './modules/global.module'
 		CasinoModule,
 		CategoryModule,
 		TelegramModule,
+		CryptoModule,
 	],
 })
 export class AppModule {}

@@ -13,7 +13,7 @@ export class SocketResolver {
 		filter: (payload, variables, _) => {
 			const userId = variables?.userId
 
-			if (!userId) return payload.live
+			if (!userId) return payload.liveWins
 
 			return payload.liveWins.user.id !== userId
 		},

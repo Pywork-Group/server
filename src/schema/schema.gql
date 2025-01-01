@@ -71,6 +71,7 @@ scalar Decimal
 
 type Mutation {
   contract(items: [Int!]!): Win!
+  cryptoPayment: String!
   logout: Boolean!
   openCase(slug: String!, times: Int!): [[Skin!]!]!
   requestWin(winId: Int!): Int!

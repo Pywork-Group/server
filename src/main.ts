@@ -16,6 +16,7 @@ async function bootstrap() {
 			'Content-Type',
 			'X-Requested-With',
 			'Apollo-Require-Preflight',
+			'Access-Control-Allow-Origin',
 		],
 		methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
 		optionsSuccessStatus: 204,

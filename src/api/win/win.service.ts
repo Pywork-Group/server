@@ -23,7 +23,7 @@ export class WinService {
 	) {}
 
 	async getWins(input: WinsQueryInput, authId?: number) {
-		const userId = input.userId || authId
+		const userId = authId || input.userId
 
 		if (input.isUserRequired && !userId) {
 			return {
